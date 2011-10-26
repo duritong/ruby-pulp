@@ -14,7 +14,7 @@ require 'rake'
 require 'jeweler'
 Jeweler::Tasks.new do |gem|
   # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
-  gem.name = "ruby-pulp"
+  gem.name = "pulp"
   gem.homepage = "https://github.com/duritong"
   gem.license = "MIT"
   gem.summary = %Q{A little ruby wrapper around th pulp API}
