@@ -13,7 +13,7 @@ require 'pulp/connection/handler'
 
 # types
 %w{consumer consumergroup content distribution errata event filter task_snapshot task
-  package package_group package_group_category repository service task_history user}.each {|type| require "pulp/#{type}" }
+  cds package package_group package_group_category repository service task_history user}.each {|type| require "pulp/#{type}" }
 
 if File.exists?(file=File.expand_path('~/.pulp.yaml')) || File.exists?(file='/etc/pulp/pulp.yaml')
   require 'yaml'
