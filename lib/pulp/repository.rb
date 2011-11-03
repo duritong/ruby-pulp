@@ -4,18 +4,19 @@ module Pulp
   #   r = Pulp::Repository.create(:feed => "http://mirror.switch.ch/ftp/mirror/epel/6/x86_64/", :id => 'epel-6-x86_64', :name => 'epel-6-x86_64', :arch => 'x86_64')
   class Repository < Pulp::Connection::Base
     has_crud :collection => { :all_filters => [ :id, :name, :arch, :groupid, :relative_path, :notes ] }
-    
+
     pulp_fields :arch, :checksum_type, :clone_ids,
       :consumer_ca, :consumer_cert,
       :content_types,
-      :distributionid, :feed_ca,
-      :feed_cert, :files_count,
-      :filters, :groupid, :id,
-      :last_sync, :name, :notes,
+      :distributionid, :files_count,
+      :filters, :name,
       :package_count, :preserve_metadata,
       :publish, :relative_path,
-      :source, :sync_schedule, :use_symlinks
-    
+      :sync_schedule, :use_symlinks
+
+    #these can't be updated
+    pulp_locked_fields :feed_ca, :feed_cert, :feed_key, :notes, :source, :groupid, :last_sync
+
     #special fields
     pulp_deferred_fields :files, :keys, :uri_ref
     
@@ -30,7 +31,7 @@ module Pulp
     pulp_action :add_errata
     pulp_action :add_file
     pulp_action :add_filters
-    pulp_action :add_group
+    pulp_action :add_group, :parse => false
     pulp_action :add_metadata
     pulp_action :add_package
     pulp_action :add_packagegroup_to_category
@@ -54,7 +55,7 @@ module Pulp
     pulp_action :list_metadata
     pulp_action :remove_file
     pulp_action :remove_filters
-    pulp_action :remove_group
+    pulp_action :remove_group, :parse => false
     pulp_action :remove_metadata
     pulp_action :rmkeys
     pulp_action :update_publish
@@ -66,7 +67,16 @@ module Pulp
       self.base_get('schedules/')
     end
     
+    def add_note(key,note)
+      self.new(self.class.base_post('notes/',self.id,{:key => key, :value => value}))
+    end
     
+    def delete_note(key)
+      self.class.base_delete("notes/#{key}/",self.id)
+    end
     
+    def update_note(key,new_value)
+      self.new(self.class.base_put("notes/#{key}/",self.id,new_value))
+    end
   end
 end

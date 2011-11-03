@@ -5,8 +5,8 @@ module Pulp
     has_get
     has_collection :all_filters => [:state]
     
-    pulp_fields :job_id, :class_name, :method_name, :state, :start_time, :finish_time, :result,
-                :exception ,:traceback, :progress, :scheduled_time, :snapshot_id
+    pulp_fields :args, :job_id, :class_name, :method_name, :state, :start_time, :finish_time, :result,
+                :exception ,:traceback, :progress, :scheduler, :scheduled_time, :snapshot_id
 
     pulp_action :snapshots, :method => :get, :array => Pulp::TaskSnapshot
 
