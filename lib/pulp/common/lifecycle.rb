@@ -126,12 +126,12 @@ module Pulp
           if options[:returns]
             module_eval %{
             def #{action_name}(#{"params#{"={}" if options[:params] == :optional}" if options[:params]})
-              #{options[:returns]}.new(self.class.base_#{options[:method]}('#{action_name}#{slash}',self.id,#{options[:params] ? 'params' : 'nil' }))
+              #{options[:returns]}.new(self.class.base_#{(options[:parse] == false) ? 'unparsed_' : '' }#{options[:method]}('#{action_name}#{slash}',self.id,#{options[:params] ? 'params' : 'nil' }))
             end}
           else
             module_eval %{
             def #{action_name}(#{"params#{"={}" if options[:params] == :optional}" if options[:params]})
-              self.class.base_#{options[:method]}('#{action_name}#{slash}',self.id,#{options[:params] ? 'params' : 'nil' })
+              self.class.base_#{(options[:parse] == false) ? 'unparsed_' : '' }#{options[:method]}('#{action_name}#{slash}',self.id,#{options[:params] ? 'params' : 'nil' })
             end}
           end
           if options[:task_list]

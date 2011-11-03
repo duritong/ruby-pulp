@@ -93,94 +93,189 @@ describe Pulp::Connection::Base do
         end
       end
     end
-    
-    [:get, :delete ].each do |method|
-      describe ".base_#{method}" do
-        context "with an item" do
-          before(:each) do
-            Pulp::Test.base.connection.expects(:[]).with('/blub/foo').returns(@context)
-          end
-          context "without params" do
+    context "parsed" do
+      [:get, :delete ].each do |method|
+        describe ".base_#{method}" do
+          context "with an item" do
             before(:each) do
-              @context.expects(method).with({}).returns(DummyResult)
+              Pulp::Test.base.connection.expects(:[]).with('/blub/foo').returns(@context)
             end
-            it "should return a parsed #{method}" do
-              Pulp::Test.send(:"base_#{method}",'foo','blub').should eql(DummyResult.real_body)
+            context "without params" do
+              before(:each) do
+                @context.expects(method).with({}).returns(DummyResult)
+              end
+              it "should return a parsed #{method}" do
+                Pulp::Test.send(:"base_#{method}",'foo','blub').should eql(DummyResult.real_body)
+              end
+            end
+            context "with a params" do
+              before(:each) do
+                @context.expects(method).with({ :params => {:b => 2 }}).returns(DummyResult)
+              end
+              it "should return a parsed #{method}" do
+                Pulp::Test.send(:"base_#{method}",'foo','blub',:b => 2).should eql(DummyResult.real_body)
+              end
             end
           end
-          context "with a params" do
+          context "without an item" do
             before(:each) do
-              @context.expects(method).with({ :params => {:b => 2 }}).returns(DummyResult)
+              Pulp::Test.base.connection.expects(:[]).with('/foo').returns(@context)
             end
-            it "should return a parsed #{method}" do
-              Pulp::Test.send(:"base_#{method}",'foo','blub',:b => 2).should eql(DummyResult.real_body)
+            context "without params" do
+              before(:each) do
+                @context.expects(method).with({}).returns(DummyResult)
+              end
+              it "should return a parsed #{method}" do
+                Pulp::Test.send(:"base_#{method}",'foo').should eql(DummyResult.real_body)
+              end
+            end
+            context "with params" do
+              before(:each) do
+                @context.expects(method).with({:params => {:b => 2 }}).returns(DummyResult)
+              end
+              it "should return a parsed #{method}" do
+                Pulp::Test.send(:"base_#{method}",'foo',nil,:b => 2).should eql(DummyResult.real_body)
+              end
             end
           end
         end
-        context "without an item" do
-          before(:each) do
-            Pulp::Test.base.connection.expects(:[]).with('/foo').returns(@context)
-          end
-          context "without params" do
+      end
+      [:post,:put].each do |method|
+        describe ".base_#{method}" do
+          context "with an item" do
             before(:each) do
-              @context.expects(method).with({}).returns(DummyResult)
+              Pulp::Test.base.connection.expects(:[]).with('/blub/foo').returns(@context)
             end
-            it "should return a parsed #{method}" do
-              Pulp::Test.send(:"base_#{method}",'foo').should eql(DummyResult.real_body)
+            context "without params" do
+              before(:each) do
+                @context.expects(method).with(nil,{:content_type => :json}).returns(DummyResult)
+              end
+              it "should return a parsed #{method}" do
+                Pulp::Test.send(:"base_#{method}",'foo','blub').should eql(DummyResult.real_body)
+              end
+            end
+            context "with a params" do
+              before(:each) do
+                @context.expects(method).with({:b => 2 }.to_json,{:content_type => :json}).returns(DummyResult)
+              end
+              it "should return a parsed #{method}" do
+                Pulp::Test.send(:"base_#{method}",'foo','blub',:b => 2).should eql(DummyResult.real_body)
+              end
             end
           end
-          context "with params" do
+          context "without an item" do
             before(:each) do
-              @context.expects(method).with({:params => {:b => 2 }}).returns(DummyResult)
+              Pulp::Test.base.connection.expects(:[]).with('/foo').returns(@context)
             end
-            it "should return a parsed #{method}" do
-              Pulp::Test.send(:"base_#{method}",'foo',nil,:b => 2).should eql(DummyResult.real_body)
+            context "without params" do
+              before(:each) do
+                @context.expects(method).with(nil,{:content_type => :json}).returns(DummyResult)
+              end
+              it "should return a parsed #{method}" do
+                Pulp::Test.send(:"base_#{method}",'foo').should eql(DummyResult.real_body)
+              end
+            end
+            context "with params" do
+              before(:each) do
+                @context.expects(method).with({:b => 2 }.to_json, {:content_type => :json}).returns(DummyResult)
+              end
+              it "should return a parsed #{method}" do
+                Pulp::Test.send(:"base_#{method}",'foo',nil,:b => 2).should eql(DummyResult.real_body)
+              end
             end
           end
         end
       end
     end
-    [:post,:put].each do |method|
-      describe ".base_#{method}" do
-        context "with an item" do
-          before(:each) do
-            Pulp::Test.base.connection.expects(:[]).with('/blub/foo').returns(@context)
-          end
-          context "without params" do
+    context "unparsed" do
+       [:get, :delete ].each do |method|
+        describe ".base_unparsed_#{method}" do
+          context "with an item" do
             before(:each) do
-              @context.expects(method).with(nil,{:content_type => :json}).returns(DummyResult)
+              Pulp::Test.base.connection.expects(:[]).with('/blub/foo').returns(@context)
             end
-            it "should return a parsed #{method}" do
-              Pulp::Test.send(:"base_#{method}",'foo','blub').should eql(DummyResult.real_body)
+            context "without params" do
+              before(:each) do
+                @context.expects(method).with({}).returns(UnparsedDummyResult)
+              end
+              it "should return an unparsed #{method}" do
+                Pulp::Test.send(:"base_unparsed_#{method}",'foo','blub').should eql(UnparsedDummyResult.real_body)
+              end
+            end
+            context "with a params" do
+              before(:each) do
+                @context.expects(method).with({ :params => {:b => 2 }}).returns(UnparsedDummyResult)
+              end
+              it "should return an unparsed #{method}" do
+                Pulp::Test.send(:"base_unparsed_#{method}",'foo','blub',:b => 2).should eql(UnparsedDummyResult.real_body)
+              end
             end
           end
-          context "with a params" do
+          context "without an item" do
             before(:each) do
-              @context.expects(method).with({:b => 2 }.to_json,{:content_type => :json}).returns(DummyResult)
+              Pulp::Test.base.connection.expects(:[]).with('/foo').returns(@context)
             end
-            it "should return a parsed #{method}" do
-              Pulp::Test.send(:"base_#{method}",'foo','blub',:b => 2).should eql(DummyResult.real_body)
+            context "without params" do
+              before(:each) do
+                @context.expects(method).with({}).returns(UnparsedDummyResult)
+              end
+              it "should return an unparsed #{method}" do
+                Pulp::Test.send(:"base_unparsed_#{method}",'foo').should eql(UnparsedDummyResult.real_body)
+              end
+            end
+            context "with params" do
+              before(:each) do
+                @context.expects(method).with({:params => {:b => 2 }}).returns(UnparsedDummyResult)
+              end
+              it "should return an unparsed #{method}" do
+                Pulp::Test.send(:"base_unparsed_#{method}",'foo',nil,:b => 2).should eql(UnparsedDummyResult.real_body)
+              end
             end
           end
         end
-        context "without an item" do
-          before(:each) do
-            Pulp::Test.base.connection.expects(:[]).with('/foo').returns(@context)
-          end
-          context "without params" do
+      end
+      [:post,:put].each do |method|
+        describe ".base_#{method}" do
+          context "with an item" do
             before(:each) do
-              @context.expects(method).with(nil,{:content_type => :json}).returns(DummyResult)
+              Pulp::Test.base.connection.expects(:[]).with('/blub/foo').returns(@context)
             end
-            it "should return a parsed #{method}" do
-              Pulp::Test.send(:"base_#{method}",'foo').should eql(DummyResult.real_body)
+            context "without params" do
+              before(:each) do
+                @context.expects(method).with(nil,{:content_type => :json}).returns(UnparsedDummyResult)
+              end
+              it "should return an unparsed #{method}" do
+                Pulp::Test.send(:"base_unparsed_#{method}",'foo','blub').should eql(UnparsedDummyResult.real_body)
+              end
+            end
+            context "with a params" do
+              before(:each) do
+                @context.expects(method).with({:b => 2 }.to_json,{:content_type => :json}).returns(UnparsedDummyResult)
+              end
+              it "should return a unparsed #{method}" do
+                Pulp::Test.send(:"base_unparsed_#{method}",'foo','blub',:b => 2).should eql(UnparsedDummyResult.real_body)
+              end
             end
           end
-          context "with params" do
+          context "without an item" do
             before(:each) do
-              @context.expects(method).with({:b => 2 }.to_json, {:content_type => :json}).returns(DummyResult)
+              Pulp::Test.base.connection.expects(:[]).with('/foo').returns(@context)
             end
-            it "should return a parsed #{method}" do
-              Pulp::Test.send(:"base_#{method}",'foo',nil,:b => 2).should eql(DummyResult.real_body)
+            context "without params" do
+              before(:each) do
+                @context.expects(method).with(nil,{:content_type => :json}).returns(UnparsedDummyResult)
+              end
+              it "should return an unparsed #{method}" do
+                Pulp::Test.send(:"base_unparsed_#{method}",'foo').should eql(UnparsedDummyResult.real_body)
+              end
+            end
+            context "with params" do
+              before(:each) do
+                @context.expects(method).with({:b => 2 }.to_json, {:content_type => :json}).returns(UnparsedDummyResult)
+              end
+              it "should return an unparsed #{method}" do
+                Pulp::Test.send(:"base_unparsed_#{method}",'foo',nil,:b => 2).should eql(UnparsedDummyResult.real_body)
+              end
             end
           end
         end

@@ -20,6 +20,26 @@ module Pulp
           @identifier ||= name.demodulize.downcase
         end
 
+        def plain_unparsed_get(cmd, params=nil)
+          plain_base.connection[cmd.sub(/^#{Regexp.escape(plain_base.api_path)}\//,'')].get(merge_params(params)).body
+        end
+
+        def base_unparsed_get(cmd,item=nil,params=nil)
+          base.connection[parse_item_cmd(item,cmd)].get(merge_params(params)).body
+        end
+
+        def base_unparsed_delete(cmd,item=nil,params=nil)
+          base.connection[parse_item_cmd(item,cmd)].delete(merge_params(params)).body
+        end
+
+        def base_unparsed_post(cmd,item=nil,params=nil)
+          base.connection[parse_item_cmd(item,cmd)].post(params.nil? ? nil : params.to_json, :content_type => :json ).body
+        end
+
+        def base_unparsed_put(cmd,item=nil,params=nil)
+          base.connection[parse_item_cmd(item,cmd)].put(params.nil? ? nil : params.to_json, :content_type => :json ).body
+        end
+
         def plain_get(cmd, params=nil)
           plain_base.parsed{|conn| conn[cmd.sub(/^#{Regexp.escape(plain_base.api_path)}\//,'')].get(merge_params(params)) }
         end

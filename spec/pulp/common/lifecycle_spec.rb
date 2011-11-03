@@ -33,6 +33,7 @@ class Pulp::ActionLifecycle < CommonLifecycle
   pulp_action :action5, :returns => Pulp::ActionLifecycle
   pulp_action :action6, :append_slash => false
   pulp_action :action7, :task_list => true
+  pulp_action :action8, :parse => false
   
   def id
     "foo"
@@ -260,9 +261,10 @@ describe Pulp::Common::Lifecycle do
   #  pulp_action :action5, :returns => Pulp::ActionLifecycle
   #  pulp_action :action6, :append_slash => false
   #  pulp_action :action7, :task_list => true
+  #  pulp_action :action8, :parse => false
   #end
   describe ".pulp_action" do
-    (1..6).each do |i|
+    (1..8).each do |i|
       it "should add a method #action#{i}" do
         Pulp::ActionLifecycle.new('ffo').should respond_to(:"action#{i}")
         
@@ -322,6 +324,13 @@ describe Pulp::Common::Lifecycle do
         Pulp::ActionLifecycle.expects(:base_get).with('action7/','foo',nil).returns("foo")
         (a=Pulp::ActionLifecycle.new('ffo').action7_tasks).should be_kind_of(Array)
         a.first.should be_kind_of(Pulp::Task)
+      end
+    end
+
+    context "without parsing" do
+      it "should call an unparsed post" do
+        Pulp::ActionLifecycle.expects(:base_unparsed_post).with('action8/','foo','aa').returns("foo")
+        Pulp::ActionLifecycle.new('ffo').action8('aa').should eql('foo')
       end
     end
   end

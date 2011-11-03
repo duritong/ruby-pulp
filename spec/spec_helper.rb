@@ -20,3 +20,13 @@ class DummyResult
     { 'a' => 1 }
   end
 end
+
+class UnparsedDummyResult
+  def self.body
+    "True"
+  end
+
+  def self.real_body
+    body
+  end
+end
