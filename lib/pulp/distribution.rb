@@ -4,8 +4,8 @@ module Pulp
     has_collection
     has_get
     
-    pulp_field :_ns, :locked => true
-    pulp_fields :description, :files, :relativepath
+    # a pulp distribution can't be updated so far
+    pulp_locked_fields :arch, :_ns, :description, :family, :files, :url, :relativepath,  :timestamp, :url, :variant, :version
     
   end
 end

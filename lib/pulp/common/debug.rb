@@ -16,14 +16,16 @@ module Pulp
                 
                 def debug_enabled=(enable)
                     @debug_enabled = enable
+                    self.output = self.output # reset output to activate it
                 end
                 
-                def output=(output)
-                    @output = output
+                def output=(o)
+                    @output = o
+                    RestClient.log = debug_enabled ? output : nil
                 end
                 
                 def output
-                    @output ||= STDOUT
+                    @output ||= STDERR
                 end
                 
                 def debug(msg)

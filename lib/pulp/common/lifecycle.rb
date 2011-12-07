@@ -142,6 +142,13 @@ module Pulp
           end
         end
         
+        def pulp_update_action(action_name,options)
+          module_eval %{
+            def update_#{action_name}(#{[*options[:params]].join(', ')})
+              self.class.base_put('',self.id,{ #{[*options[:params]].collect{|p| ":#{p} => #{p}" }.join(', ')} })
+            end}
+        end
+
         def special_fields
           @special_fields ||= []
         end

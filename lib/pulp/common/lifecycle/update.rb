@@ -7,7 +7,9 @@ module Pulp
         end
         
         def save
-          self.class.update(self.id,user_fields.reject{|key,value| self.class.special_fields.include?(key) })
+          res = self.class.update(self.id,user_fields.reject{|key,value| self.class.special_fields.include?(key) })
+          refresh if self.respond_to?(:refresh)
+          res
         end
         
         module ClassMethods

@@ -6,9 +6,13 @@ module Pulp
       pulp_special_fields :_id, :id
       
       def initialize(data={})
-        @fields = data
+        set_fields(data)
       end
-      
+
+      def set_fields(field_data)
+        @fields = field_data
+      end
+
       class << self
         attr_accessor :hostname, :username, :password, :https
 

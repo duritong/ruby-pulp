@@ -10,7 +10,7 @@ module Pulp
         end
         module ClassMethods
           def delete_all
-            delete('')
+            base_unparsed_delete('','')
           end
           
           def delete(item_id)
