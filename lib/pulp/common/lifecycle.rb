@@ -24,7 +24,7 @@ module Pulp
       
       module ClassMethods
         # Allows for dynamically declaring fields that will come from
-        # Cobbler.
+        # Pulp.
         #
         def pulp_field(field,options={})
           locked_fields << field if options[:locked]
