@@ -25,42 +25,42 @@ module Pulp
         end
 
         def plain_unparsed_get(cmd, params=nil)
-          plain_base.connection[cmd.sub(/^#{Regexp.escape(plain_base.api_path)}\//,'')].get(merge_params(params)).body
+          plain_base.connection[s(cmd.sub(/^#{Regexp.escape(plain_base.api_path)}\//,''))].get(merge_params(params)).body
         end
 
         def base_unparsed_get(cmd,item=nil,params=nil)
-          base.connection[parse_item_cmd(item,cmd)].get(merge_params(params)).body
+          base.connection[s(parse_item_cmd(item,cmd))].get(merge_params(params)).body
         end
 
         def base_unparsed_delete(cmd,item=nil,params=nil)
-          base.connection[parse_item_cmd(item,cmd)].delete(merge_params(params)).body
+          base.connection[s(parse_item_cmd(item,cmd))].delete(merge_params(params)).body
         end
 
         def base_unparsed_post(cmd,item=nil,params=nil)
-          base.connection[parse_item_cmd(item,cmd)].post(params.nil? ? nil : params.to_json, :content_type => :json ).body
+          base.connection[s(parse_item_cmd(item,cmd))].post(params.nil? ? nil : params.to_json, :content_type => :json ).body
         end
 
         def base_unparsed_put(cmd,item=nil,params=nil)
-          base.connection[parse_item_cmd(item,cmd)].put(params.nil? ? nil : params.to_json, :content_type => :json ).body
+          base.connection[s(parse_item_cmd(item,cmd))].put(params.nil? ? nil : params.to_json, :content_type => :json ).body
         end
 
         def plain_get(cmd, params=nil)
-          plain_base.parsed{|conn| conn[cmd.sub(/^#{Regexp.escape(plain_base.api_path)}\//,'')].get(merge_params(params)) }
+          plain_base.parsed{|conn| conn[s(cmd.sub(/^#{Regexp.escape(plain_base.api_path)}\//,''))].get(merge_params(params)) }
         end
         
         def base_get(cmd,item=nil,params=nil)
-          base.parsed{|conn| conn[parse_item_cmd(item,cmd)].get(merge_params(params)) }
+          base.parsed{|conn| conn[s(parse_item_cmd(item,cmd))].get(merge_params(params)) }
         end
         
         def base_delete(cmd,item=nil,params=nil)
-          base.parsed{|conn| conn[parse_item_cmd(item,cmd)].delete(merge_params(params)) }
+          base.parsed{|conn| conn[s(parse_item_cmd(item,cmd))].delete(merge_params(params)) }
         end
         
         def base_post(cmd,item=nil,params=nil)
-          base.parsed{|conn| conn[parse_item_cmd(item,cmd)].post(params.nil? ? nil : params.to_json, :content_type => :json ) }
+          base.parsed{|conn| conn[s(parse_item_cmd(item,cmd))].post(params.nil? ? nil : params.to_json, :content_type => :json ) }
         end
         def base_put(cmd,item=nil,params=nil)
-          base.parsed{|conn| conn[parse_item_cmd(item,cmd)].put(params.nil? ? nil : params.to_json, :content_type => :json ) }
+          base.parsed{|conn| conn[s(parse_item_cmd(item,cmd))].put(params.nil? ? nil : params.to_json, :content_type => :json ) }
         end
         
         def base
@@ -77,6 +77,12 @@ module Pulp
         
         def merge_params(params)
           params.nil? ? {} : { :params => params }
+        end
+
+        # sanitize uri
+        # if uri is already escaped, we don't do anything, otherwise we escape it.
+        def s(uri)
+          (URI.decode(uri) != uri) ? uri : URI.escape(uri)
         end
       end
     end

@@ -93,9 +93,49 @@ describe Pulp::Connection::Base do
         end
       end
     end
+    describe ".plain_unparsed_get" do
+      context "with special urls" do
+        it "should escape the url" do
+          Pulp::Test.plain_base.connection.expects(:[]).with('fo%20o').returns(@context)
+          @context.expects(:get).with({}).returns(UnparsedDummyResult)
+          Pulp::Test.plain_unparsed_get('fo o').should eql(UnparsedDummyResult.real_body)
+        end
+      end
+      context "with normal urls" do
+        before(:each) do
+          Pulp::Test.plain_base.connection.expects(:[]).with('foo').returns(@context)
+        end
+        context "without params" do
+          before(:each) do
+            @context.expects(:get).with({}).returns(UnparsedDummyResult)
+          end
+          it "should return a parsed get" do
+            Pulp::Test.plain_unparsed_get('foo').should eql(UnparsedDummyResult.real_body)
+          end
+          it "should strip the api url prefix" do
+            Pulp::Test.plain_unparsed_get('/pulp/api/foo').should eql(UnparsedDummyResult.real_body)
+          end
+        end
+        context "with params" do
+          before(:each) do
+            @context.expects(:get).with(:params => { :b => 2}).returns(UnparsedDummyResult)
+          end
+          it "should add the params" do
+            Pulp::Test.plain_unparsed_get('/pulp/api/foo',:b => 2).should eql(UnparsedDummyResult.real_body)
+          end
+        end
+      end
+    end
     context "parsed" do
       [:get, :delete ].each do |method|
         describe ".base_#{method}" do
+          context "with a special url" do
+            it "should escape the url for base_#{method}" do
+              Pulp::Test.base.connection.expects(:[]).with('/blub/fo%20o').returns(@context)
+              @context.expects(method).with({ :params => {:b => 2 }}).returns(DummyResult)
+              Pulp::Test.send(:"base_#{method}",'fo o','blub',:b => 2).should eql(DummyResult.real_body)
+            end
+          end
           context "with an item" do
             before(:each) do
               Pulp::Test.base.connection.expects(:[]).with('/blub/foo').returns(@context)
@@ -142,6 +182,13 @@ describe Pulp::Connection::Base do
       end
       [:post,:put].each do |method|
         describe ".base_#{method}" do
+          context "with a special url" do
+            it "should escape the url for base_#{method}" do
+              Pulp::Test.base.connection.expects(:[]).with('/blub/fo%20o').returns(@context)
+              @context.expects(method).with(nil,{:content_type => :json}).returns(DummyResult)
+              Pulp::Test.send(:"base_#{method}",'fo o','blub').should eql(DummyResult.real_body)
+            end
+          end
           context "with an item" do
             before(:each) do
               Pulp::Test.base.connection.expects(:[]).with('/blub/foo').returns(@context)
@@ -190,6 +237,13 @@ describe Pulp::Connection::Base do
     context "unparsed" do
        [:get, :delete ].each do |method|
         describe ".base_unparsed_#{method}" do
+          context "with a special url" do
+            it "should escape the url for base_#{method}" do
+              Pulp::Test.base.connection.expects(:[]).with('/blub/fo%20o').returns(@context)
+              @context.expects(method).with({}).returns(UnparsedDummyResult)
+              Pulp::Test.send(:"base_unparsed_#{method}",'fo o','blub').should eql(UnparsedDummyResult.real_body)
+            end
+          end
           context "with an item" do
             before(:each) do
               Pulp::Test.base.connection.expects(:[]).with('/blub/foo').returns(@context)
@@ -236,6 +290,13 @@ describe Pulp::Connection::Base do
       end
       [:post,:put].each do |method|
         describe ".base_#{method}" do
+          context "with a special url" do
+            it "should escape the url for base_#{method}" do
+              Pulp::Test.base.connection.expects(:[]).with('/blub/fo%20o').returns(@context)
+              @context.expects(method).with(nil,{:content_type => :json}).returns(UnparsedDummyResult)
+               Pulp::Test.send(:"base_unparsed_#{method}",'fo o','blub').should eql(UnparsedDummyResult.real_body)
+            end
+          end
           context "with an item" do
             before(:each) do
               Pulp::Test.base.connection.expects(:[]).with('/blub/foo').returns(@context)
