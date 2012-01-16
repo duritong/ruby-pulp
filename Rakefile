@@ -15,10 +15,10 @@ require 'jeweler'
 Jeweler::Tasks.new do |gem|
   # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
   gem.name = "pulp"
-  gem.homepage = "https://github.com/duritong"
+  gem.homepage = "https://github.com/duritong/ruby-pulp"
   gem.license = "MIT"
-  gem.summary = %Q{A little ruby wrapper around th pulp API}
-  gem.description = %Q{A little ruby wrapper around th pulp (http://pulpproject.org) API}
+  gem.summary = %Q{A little ruby wrapper around the pulp API}
+  gem.description = %Q{A little ruby wrapper around the pulp (http://pulpproject.org) API}
   gem.email = "mh@immerda.ch"
   gem.authors = ["mh"]
   # dependencies defined in Gemfile

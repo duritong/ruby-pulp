@@ -5,7 +5,7 @@ A ruby gem to talk to a pulp server using its REST-api.
 Pulp is juicy software repository managment and so we want to talk to it in a juicy language.
 
 The library provides easy to use, `activerecord`-like objects for the different resources you can manage
-via Pulp's REST-Api. So that if you for example like to create a new repository you need to do only the
+via Pulp's REST-Api. So if you for example like to create a new repository, you need to do only the
 following:
 
     repo = Pulp::Repository.create(
@@ -13,39 +13,52 @@ following:
       :name => 'Example Repository for pulp on RHEL 6 x86_64',
       :arch => 'x86_64',
       :feed => "http://repos.fedorapeople.org/repos/pulp/pulp/6Server/x86_64/",
-      :relative_path => "pulp_test/#{random_id}",
+      :relative_path => "pulp_test/pulp-rhel6-x86_64",
       :sync_schedule => '' 
     )
 
 You can then search by any field that is allowed as search field for that repository:
 
-    Pulp::Repository.find_by_arch('x86_64').find{{|r| r.name == 'pulp-rhel6-x86_64' }
+    repo = Pulp::Repository.find_by_arch('x86_64').find{|r| r.name == 'pulp-rhel6-x86_64' }
     puts repo.name
+    => 'Example Repository for pulp on RHEL 6 x86_64',
 
-Or simply get it by its id:
+Or simply fetch the repo by its id:
 
     repo = Pulp::Repository.get('pulp-rhel6-x86_64')
     puts repo.name
+    => 'Example Repository for pulp on RHEL 6 x86_64',
 
-If you don't like it anymore, you can simply delete it:
+You can then edit some of its fields:
+
+    repo.name => 'Example Repository for pulp on RHEL 6 x86_64 - Extended NAME'
+    repo.save
+    repo = Pulp::Repository.get('pulp-rhel6-x86_64')
+    puts repo.name
+    => 'Example Repository for pulp on RHEL 6 x86_64 - Extended NAME'
+
+If you don't like it anymore, you can also delete it:
 
     repo.delete
 
-As you would know things from working with activerecord.
+As you see, it behaves as you know things from working with activerecord.
 
 == Disclaimer
 
 Not all parts have already been used and tested against a real pulp server. Pulp is still a piece of software
-that is moving very quickly forward. So use it only with the latest pulp version, and it might be that things
-are broken.
+that is moving very quickly forward. So use it only with the latest pulp version and you might find various things
+that are broken.
 
 Bug reports / Pull requests (including tests) are welcome! See below.
 
 == Configuration
 
-When requiring the gem, it is looking for the environment variable PULP_YML, if it points to an existing yaml file,
-or whether a yaml file exist at `~/.pulp.yaml` or `/etc/pulp/pulp.yaml`. It then tries to configure itself with
-the options from that file.
+When requiring the gem, it is looking for the following config resources:
+
+* an existing path in the environment variable PULP_YML
+* does a yaml file exist at `~/.pulp.yaml` or `/etc/pulp/pulp.yaml`.
+
+The pulp gem then tries to configure itself with the options from that file.
 
 However, you can also later configure the access credentils with:
 
@@ -55,22 +68,23 @@ However, you can also later configure the access credentils with:
 
 == Examples
 
-A few examples can be found in `examples/`. The main one `repositories.rb` can easily be run agains a local
-pulp server, that does have internet connection.
-It will generate a new repository, clone from it, and will cleanup at the end. Give it a shot, otherwise even
-reading the code, might give you already an idea of how to use this gem.
+A few examples can be found in `examples/`. The main one `repositories.rb` can easily be run against a local
+pulp server, that is connected to the internet.
+It will generate a new repository, clone from it, and will cleanup everything at the end. Give it a shot and see
+how things can be used. Otherwise even reading the code, might give you an idea of how to use this gem.
 
 == Defining resources
 
 This gem comes with a little framework behind that provides various methods to create the classes for the
 resources in a very declarative manner. The main idea is that a Pulp resource inherits from `Pulp::Connection::Base`
 and then declares its field and their behavior with the various class methods. These fields and actions are mainly
-take from the existing PULP-Api documentation: https://fedorahosted.org/pulp/wiki/UGRESTAPI
+taken from the existing PULP-Api documentation: https://fedorahosted.org/pulp/wiki/UGRESTAPI
 
 The idea is to make it very easy to declare the fields and actions of resources and to not let you rewrite a lot
-of common code to just interact with the REST-API. What follows is a short description of the most important fields.
+of common code to interact with the REST-API. What follows is a short description of the most important fields.
 
-By default we assume that the objects have an `id` field that is their unique identifier.
+By default we assume that the objects have an `id` field that is their unique identifier. As pulp uses a mongo db as
+backend, this is very likely.
 
 We can then define further fields of the resource, with the `pulp_field(s)` method. For example for a
 `Pulp::Repository` we can define the fields `arch`, `name`, `release`.
@@ -85,7 +99,7 @@ We can then define further fields of the resource, with the `pulp_field(s)` meth
     
     puts repo.name
     repo.name = 'some other name'
-    repo.save # will to an UPDATE including the new name
+    repo.save # will do an UPDATE including the new name
 
 You can also execute various actions on the different pulp resources. These actions can be declared using `pulp_action`:
 
