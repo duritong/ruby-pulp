@@ -10,7 +10,7 @@ module Pulp
     pulp_field :_ns, :locked => true
     pulp_fields :arch, :buildhost, :checksum, :description,
                   :download_url, :epoch, :filename, :group,
-                  :license, :name, :provides, :release,
+                  :license, :name, :provides, :release, :repoids,
                   :repo_defined, :requires, :size, :vendor, :version
                   
     def self.by_nvrea(name,version,release,epoch,arch)
