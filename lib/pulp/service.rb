@@ -21,11 +21,11 @@ module Pulp
     
     # TODO: won't work yet probably
     def self.append_file_content(id,data)
-      base_post('',"upload/#{id}/append",data)
+      base_unparsed_put('',"upload/append/#{id}",data,binary=true)
     end
     
     def self.import_file(uploadid, metadata)
-      base_put('','upload/import',{:uploadid => uploadid, :metadata => metadata})
+      base_post('','upload/import',{:uploadid => uploadid, :metadata => metadata})
     end
     
     def self.package_checksum(pkglist)
