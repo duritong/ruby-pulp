@@ -53,6 +53,7 @@ Gem::Specification.new do |s|
     "lib/pulp/task_history.rb",
     "lib/pulp/task_snapshot.rb",
     "lib/pulp/user.rb",
+    "pulp.gemspec",
     "spec/pulp/common/debug_spec.rb",
     "spec/pulp/common/lifecycle/create_spec.rb",
     "spec/pulp/common/lifecycle/delete_spec.rb",
