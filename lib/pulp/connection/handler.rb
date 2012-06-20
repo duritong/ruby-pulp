@@ -6,12 +6,12 @@ module Pulp
       
       class << self
         attr_accessor :hostname,:username, :password
-        
+
         def instance_for(identifier,h=nil,u=nil,p=nil,https=true)
           instances[identifier] ||= Handler.new(identifier,
-                                                h||hostname,
-                                                u||username,
-                                                p||password,
+                                                h||hostname||'localhost',
+                                                u||username||'admin',
+                                                p||password||'admin',
                                                 https
           )
         end

@@ -36,14 +36,14 @@ describe Pulp::Service do
 
   describe ".append_file_content" do
     it "should append file content to the specific id" do
-      Pulp::Service.expects(:base_post).with('','upload/1/append',"content").returns(1)
+      Pulp::Service.expects(:base_unparsed_put).with('','upload/append/1',"content",true).returns(1)
       Pulp::Service.append_file_content(1,'content').should eql(1)
     end
   end
   
   describe ".import_file" do
     it "should import an uploaded file" do
-      Pulp::Service.expects(:base_put).with('','upload/import',{:uploadid => 1, :metadata => {:a => 1}}).returns(1)
+      Pulp::Service.expects(:base_post).with('','upload/import',{:uploadid => 1, :metadata => {:a => 1}}).returns(1)
       Pulp::Service.import_file(1,:a => 1).should eql(1)
     end
   end

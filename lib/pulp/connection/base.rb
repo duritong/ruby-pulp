@@ -48,7 +48,7 @@ module Pulp
             p = params.nil? ? nil : params.to_json
             ct = :json
           end
-          base.connection[parse_item_cmd(item,cmd)].put(p, :content_type => ct).body
+          base.connection[s(parse_item_cmd(item,cmd))].put(p, :content_type => ct).body
         end
 
         def plain_get(cmd, params=nil)

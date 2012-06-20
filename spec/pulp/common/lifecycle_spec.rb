@@ -321,7 +321,7 @@ describe Pulp::Common::Lifecycle do
     
     context "with a task lists" do
       it "gets a get method for tasks" do
-        Pulp::ActionLifecycle.expects(:base_get).with('action7/','foo',nil).returns("foo")
+        Pulp::ActionLifecycle.expects(:base_get).with('action7/','foo',nil).returns(["foo"])
         (a=Pulp::ActionLifecycle.new('ffo').action7_tasks).should be_kind_of(Array)
         a.first.should be_kind_of(Pulp::Task)
       end
