@@ -19,9 +19,8 @@ module Pulp
       base_post('','upload',params)
     end
     
-    # TODO: won't work yet probably
     def self.append_file_content(id,data)
-      base_unparsed_put('',"upload/append/#{id}",data,binary=true)
+      base_unparsed_put('',"upload/append/#{id}",data,true)
     end
     
     def self.import_file(uploadid, metadata)
