@@ -40,8 +40,12 @@ module Pulp
           base.connection[s(parse_item_cmd(item,cmd))].post(params.nil? ? nil : params.to_json, :content_type => :json ).body
         end
 
-        def base_unparsed_put(cmd,item=nil,params=nil)
-          base.connection[s(parse_item_cmd(item,cmd))].put(params.nil? ? nil : params.to_json, :content_type => :json ).body
+        def base_unparsed_put(cmd,item=nil,params=nil,binary=nil)
+          if binary.nil?
+            base.connection[parse_item_cmd(item,cmd)].put(params.nil? ? nil : params.to_json, :content_type => :json ).body
+          else
+            base.connection[parse_item_cmd(item,cmd)].put(params.nil? ? nil : params, :content_type => "application/stream" ).body
+          end
         end
 
         def plain_get(cmd, params=nil)
