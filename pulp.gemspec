@@ -4,14 +4,14 @@
 # -*- encoding: utf-8 -*-
 
 Gem::Specification.new do |s|
-  s.name = %q{pulp}
-  s.version = "0.0.9"
+  s.name = "pulp"
+  s.version = "0.0.10"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["mh"]
-  s.date = %q{2012-06-20}
-  s.description = %q{A little ruby wrapper around the pulp (http://pulpproject.org) API}
-  s.email = %q{mh@immerda.ch}
+  s.date = "2012-09-05"
+  s.description = "A little ruby wrapper around the pulp (http://pulpproject.org) API"
+  s.email = "mh@immerda.ch"
   s.extra_rdoc_files = [
     "LICENSE.txt",
     "README.rdoc"
@@ -71,11 +71,11 @@ Gem::Specification.new do |s|
     "spec/spec.opts",
     "spec/spec_helper.rb"
   ]
-  s.homepage = %q{https://github.com/duritong/ruby-pulp}
+  s.homepage = "https://github.com/duritong/ruby-pulp"
   s.licenses = ["MIT"]
   s.require_paths = ["lib"]
-  s.rubygems_version = %q{1.5.0}
-  s.summary = %q{A little ruby wrapper around the pulp API}
+  s.rubygems_version = "1.8.17"
+  s.summary = "A little ruby wrapper around the pulp API"
 
   if s.respond_to? :specification_version then
     s.specification_version = 3
