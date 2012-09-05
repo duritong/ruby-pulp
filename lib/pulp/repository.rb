@@ -10,7 +10,7 @@ module Pulp
     #these can't be updated
     pulp_locked_fields  :checksum_type, :clone_ids, :content_types, :feed_ca, :feed_cert, :feed_key,
       :filters, :files_count, :groupid, :last_sync, :publish,
-      :consumer_ca, :consumer_cert, :distributionid, :notes, :next_scheduled_sync,
+      :consumer_ca, :consumer_cert, :consumer_key ,:distributionid, :notes, :next_scheduled_sync,
       :package_count, :preserve_metadata, :relative_path, :source, :sync_schedule, :use_symlinks, :uri_ref
 
     #special fields
