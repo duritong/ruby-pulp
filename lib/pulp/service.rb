@@ -43,7 +43,7 @@ module Pulp
       Pulp::Task.new(base_post('','discovery/repo/',{:url => url, :type => type, :cert_data => cert_data }))
     end
     
-    def self.repo_discovery_staus(taskid)
+    def self.repo_discovery_status(taskid)
       Pulp::Task.new(base_get('',"discovery/repo/#{taskid}"))
     end
   end
