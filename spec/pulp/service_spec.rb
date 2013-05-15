@@ -75,10 +75,10 @@ describe Pulp::Service do
     end
   end
   
-  describe ".repo_discovery_staus" do
+  describe ".repo_discovery_status" do
     it "should give me a result of discovered repos" do
       Pulp::Service.expects(:base_get).with('','discovery/repo/2',nil).returns('id' => 2, 'result' => 'foo')
-      Pulp::Service.repo_discovery_staus(2).result.should eql('foo')
+      Pulp::Service.repo_discovery_status(2).result.should eql('foo')
     end
   end
 end
