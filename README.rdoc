@@ -1,5 +1,7 @@
 = ruby-pulp
 
+{<img src="https://travis-ci.org/mkrogemann/ruby-pulp.png?branch=master" alt="Build Status" />}[https://travis-ci.org/mkrogemann/ruby-pulp]
+
 A ruby gem to talk to a pulp server using its REST-api.
 
 Pulp is juicy software repository managment and so we want to talk to it in a juicy language.
@@ -14,7 +16,7 @@ following:
       :arch => 'x86_64',
       :feed => "http://repos.fedorapeople.org/repos/pulp/pulp/6Server/x86_64/",
       :relative_path => "pulp_test/pulp-rhel6-x86_64",
-      :sync_schedule => '' 
+      :sync_schedule => ''
     )
 
 You can then search by any field that is allowed as search field for that repository:
@@ -96,7 +98,7 @@ We can then define further fields of the resource, with the `pulp_field(s)` meth
         ...
       end
     end
-    
+
     puts repo.name
     repo.name = 'some other name'
     repo.save # will do an UPDATE including the new name
@@ -119,7 +121,7 @@ within the near future of pulp.
 
 A `pulp_update_action` can be used to describe update methods for various special (usually locked fields).
 
-Any other methods can simple be added added using short methods, for example like, getting all the schedules or deleting a 
+Any other methods can simple be added added using short methods, for example like, getting all the schedules or deleting a
 node of a repository:
 
     module Pulp
@@ -144,9 +146,9 @@ the code of this gem and C) read the pulp python code, as some things might not 
 all. But the pulp maintainers are doing a really great job to get this last point fixe. Kudos to them! And they are also very
 happy if you point things out in the api, that does currently not work very correctly, does not follow the REST-"Standard",
 is undocumented or is somehow else weird.
-    
+
 == Contributing to ruby-pulp
- 
+
 * Check out the latest master to make sure the feature hasn't been implemented or the bug hasn't been fixed yet
 * Check out the issue tracker to make sure someone already hasn't requested it and/or contributed it
 * Fork the project

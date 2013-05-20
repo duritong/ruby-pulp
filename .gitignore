@@ -11,6 +11,12 @@ doc
 # bundler
 .bundle
 
+# rvm
+.rvmrc
+
+# Gemfile.lock should not be tracked when building a gem
+Gemfile.lock
+
 # jeweler generated
 pkg
 

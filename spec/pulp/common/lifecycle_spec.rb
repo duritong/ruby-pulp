@@ -1,5 +1,4 @@
-#!/usr/bin/env ruby
-require File.dirname(__FILE__) + '/../../spec_helper'
+require 'spec_helper'
 
 class CommonLifecycle
   include Pulp::Common::Lifecycle
@@ -13,9 +12,9 @@ class TestLifecycle < CommonLifecycle
   pulp_field :normal_field
   pulp_field :locked_field, :locked => true
   pulp_field :options_field, :bla => true
-  
+
   pulp_fields :multiple_field1, :multiple_field2
-  
+
   pulp_locked_field :locked_field1
   pulp_locked_field :locked_field1a, :foo => true
   pulp_locked_fields :locked_field2, :locked_field3
@@ -34,7 +33,7 @@ class Pulp::ActionLifecycle < CommonLifecycle
   pulp_action :action6, :append_slash => false
   pulp_action :action7, :task_list => true
   pulp_action :action8, :parse => false
-  
+
   def id
     "foo"
   end
@@ -45,7 +44,7 @@ class Pulp::DeferredLifecycle < CommonLifecycle
   pulp_deferred_field :deferred2, :array => Pulp::DeferredLifecycle
   pulp_deferred_field :deferred3, :returns => :plain
   pulp_deferred_field :deferred4, :returns => Pulp::DeferredLifecycle
-  
+
   def id
     "foo"
   end
@@ -86,7 +85,7 @@ describe Pulp::Common::Lifecycle do
       it "should generate getters for it" do
         instance.should respond_to(:normal_field)
       end
-      it "should generate setters for it" do 
+      it "should generate setters for it" do
         instance.should respond_to(:normal_field=)
       end
     end
@@ -132,7 +131,7 @@ describe Pulp::Common::Lifecycle do
       instance.should respond_to(:multiple_field2=)
     end
   end
-  
+
   def self.locked_field(field,options = false)
     it "should have a getter" do
       instance.should respond_to(field)
@@ -149,19 +148,19 @@ describe Pulp::Common::Lifecycle do
       instance.locked_fields.should include(field)
     end
   end
-  
+
   describe ".pulp_locked_field" do
     locked_field :locked_field1
     locked_field :locked_field1a,true
   end
-  
+
   describe ".pulp_locked_fields" do
     context "should add multiple locked fields" do
       locked_field :locked_field2
       locked_field :locked_field3
     end
   end
-  
+
   def self.special_field(field,options=false)
     locked_field field,options
     it "should be registered as special field" do
@@ -178,7 +177,7 @@ describe Pulp::Common::Lifecycle do
       special_field :special_field3
     end
   end
-  
+
   describe ".has_collection" do
     context "without options" do
       it "should have an .all method" do
@@ -189,11 +188,11 @@ describe Pulp::Common::Lifecycle do
           CollectionLifecycle.expects(:base_get).with('',nil,nil).returns([{:a => 1},{:b => 2}])
         end
         let(:result) { CollectionLifecycle.all }
-        
+
         it "should return a collection" do
-          result.should be_kind_of(Array)        
+          result.should be_kind_of(Array)
         end
-        
+
         it "should contain the result" do
           result.first.fields[:a].should eql(1)
           result.last.fields[:b].should eql(2)
@@ -223,9 +222,9 @@ describe Pulp::Common::Lifecycle do
       end
     end
   end
-  
+
   describe ".has_crud" do
-    
+
     context "without options" do
       it "should have an .all method" do
         CrudLifecycle.should respond_to(:all)
@@ -235,11 +234,11 @@ describe Pulp::Common::Lifecycle do
           CrudLifecycle.expects(:base_get).with('',nil,nil).returns([{:a => 1},{:b => 2}])
         end
         let(:result) { CrudLifecycle.all }
-        
+
         it "should return a collection" do
-          result.should be_kind_of(Array)        
+          result.should be_kind_of(Array)
         end
-        
+
         it "should contain the result" do
           result.first.fields[:a].should eql(1)
           result.last.fields[:b].should eql(2)
@@ -267,7 +266,7 @@ describe Pulp::Common::Lifecycle do
     (1..8).each do |i|
       it "should add a method #action#{i}" do
         Pulp::ActionLifecycle.new('ffo').should respond_to(:"action#{i}")
-        
+
       end
     end
     context "without any options" do
@@ -275,19 +274,19 @@ describe Pulp::Common::Lifecycle do
         Pulp::ActionLifecycle.expects(:base_post).with('action1/','foo','aa').returns("foo")
         Pulp::ActionLifecycle.new('ffo').action1('aa').should eql('foo')
       end
-      
+
       it "should also require params" do
         lambda{ Pulp::ActionLifecycle.new('ffo').action1 }.should(raise_error(ArgumentError))
       end
     end
-    
+
     context "with a method option" do
       it "should call the exact method, add a slash" do
         Pulp::ActionLifecycle.expects(:base_get).with('action2/','foo','aa').returns("foo")
         Pulp::ActionLifecycle.new('ffo').action2('aa').should eql('foo')
       end
     end
-    
+
     context "without any params" do
       it "should not allow any params" do
         Pulp::ActionLifecycle.expects(:base_post).returns "blub"
@@ -295,7 +294,7 @@ describe Pulp::Common::Lifecycle do
         lambda{ Pulp::ActionLifecycle.new('ffo').action3(1) }.should(raise_error(ArgumentError))
       end
     end
-    
+
     context "with optional params" do
       it "should allow all or none params" do
         Pulp::ActionLifecycle.expects(:base_post).twice
@@ -303,7 +302,7 @@ describe Pulp::Common::Lifecycle do
         lambda{ Pulp::ActionLifecycle.new('ffo').action4(1) }.should_not(raise_error(ArgumentError))
       end
     end
-    
+
     context "with a returns" do
       it "should return a new object of type returns" do
         Pulp::ActionLifecycle.expects(:base_post).returns "blub"
@@ -311,14 +310,14 @@ describe Pulp::Common::Lifecycle do
         a.should be_kind_of(Pulp::ActionLifecycle)
       end
     end
-    
+
     context "without adding a slash" do
       it "should call post but without a slash" do
         Pulp::ActionLifecycle.expects(:base_post).with('action6','foo','aa').returns("foo")
         Pulp::ActionLifecycle.new('ffo').action6('aa').should eql('foo')
       end
     end
-    
+
     context "with a task lists" do
       it "gets a get method for tasks" do
         Pulp::ActionLifecycle.expects(:base_get).with('action7/','foo',nil).returns(["foo"])
@@ -334,13 +333,13 @@ describe Pulp::Common::Lifecycle do
       end
     end
   end
-  
+
 #class Pulp::DeferredLifecycle < CommonLifecycle
 #  pulp_action :deferred1
 #  pulp_action :deferred2, :array => Pulp::DeferredLifecycle
 #  pulp_action :deferred3, :returns => :plain
 #  pulp_action :deferred4, :returns => Pulp::DeferredLifecycle
-#  
+#
 #  def id
 #    "foo"
 #  end
@@ -350,7 +349,7 @@ describe Pulp::Common::Lifecycle do
       it "provides a method for the deferred field name deferred#{i}" do
         Pulp::DeferredLifecycle.new('a').should respond_to(:"deferred#{i}")
       end
-      
+
       it "should have a method to obtain the link for deferred#{i}" do
         Pulp::DeferredLifecycle.new("deferred#{i}" => 'a').send(:"deferred#{i}_link").should eql('a')
       end
@@ -361,7 +360,7 @@ describe Pulp::Common::Lifecycle do
         Pulp::DeferredLifecycle.new('deferred1' => 'a').deferred1.should eql('foo')
       end
     end
-    
+
     context "with an array to return" do
       it "should return an array with these types" do
         Pulp::DeferredLifecycle.expects(:plain_get).with('a',nil,nil).returns(['foo1','foo2'])
@@ -370,7 +369,7 @@ describe Pulp::Common::Lifecycle do
         a.first.fields.should eql('foo1')
       end
     end
-    
+
     context "with a plain return" do
       it "should return what it gets from the plain connection" do
         a = Object.new
@@ -381,7 +380,7 @@ describe Pulp::Common::Lifecycle do
         Pulp::DeferredLifecycle.new('deferred3' => 'a').deferred3.should eql('ff')
       end
     end
-    
+
     context "with an object returns" do
       it "should return an instance of that object" do
         Pulp::DeferredLifecycle.expects(:plain_get).with('a',nil,nil).returns('foo1' => 2)
@@ -389,5 +388,5 @@ describe Pulp::Common::Lifecycle do
       end
     end
   end
-  
+
 end
