@@ -25,7 +25,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency('rspec', '~> 2.13.0')
   s.add_development_dependency('jeweler', '~> 1.6.4')
   s.add_development_dependency('rcov', '~> 1.0.0') if RUBY_VERSION < '1.9.0'
-  s.add_development_dependency('simplecov', '~> 0.7.1') if RUBY_VERSION >= '1.9.0'
+  s.add_development_dependency('simplecov', '~> 0.7.1')
   s.add_development_dependency('mocha', '~> 0.14.0')
 
 end
