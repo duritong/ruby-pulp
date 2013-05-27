@@ -1,12 +1,11 @@
-#! /usr/bin/env ruby
-require File.dirname(__FILE__) + '/../../../spec_helper'
+require 'spec_helper'
 
 class TestCreate
   attr_reader :fields
   def initialize(fields)
     @fields = fields
   end
-  
+
   include Pulp::Common::Lifecycle::Create
 end
 

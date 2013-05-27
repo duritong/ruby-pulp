@@ -1,5 +1,4 @@
-#! /usr/bin/env ruby
-require File.dirname(__FILE__) + '/../../spec_helper'
+require 'spec_helper'
 
 module Pulp
   class Test < Pulp::Connection::Base
@@ -19,25 +18,25 @@ describe Pulp::Connection::Base do
       a.should_not eql(Pulp::Test.send(:base))
     end
   end
-  
+
   describe ".identifier" do
     it "is the downcased class name" do
       Pulp::Test.identifier.should eql('test')
     end
   end
-  
+
   describe ".base" do
     it "differs based on the used class" do
       Pulp::Test.base.should_not eql(Pulp::Test2.send(:base))
     end
   end
-  
+
   describe ".plain_base" do
     it "is without any context" do
       Pulp::Test.plain_base.url.should eql('https://localhost/pulp/api/')
     end
   end
-  
+
   describe ".parse_item_cmd" do
     context "with an item" do
       it "should prefix with an item" do
@@ -56,7 +55,7 @@ describe Pulp::Connection::Base do
       end
     end
   end
-  
+
   describe ".merge_params" do
     it "should return an empty hash on no params" do
       Pulp::Test.merge_params(nil).should eql({})
@@ -75,7 +74,7 @@ describe Pulp::Connection::Base do
       end
       context "without params" do
         before(:each) do
-          @context.expects(:get).with({}).returns(DummyResult)  
+          @context.expects(:get).with({}).returns(DummyResult)
         end
         it "should return a parsed get" do
           Pulp::Test.plain_get('foo').should eql(DummyResult.real_body)
@@ -349,7 +348,7 @@ describe Pulp::Connection::Base do
         Pulp::Test.should respond_to("#{field}=")
         Pulp::Test.should respond_to("#{field}")
       end
-      
+
       it "is used for the base connection" do
         Pulp::Test.reset
         Pulp::Test.send("#{field}=","foo")
@@ -364,7 +363,7 @@ describe Pulp::Connection::Base do
       end
     end
   end
-  
+
   describe "initialization" do
     it "initializes the fields with the supplied data" do
       Pulp::Test.new(:a => 1).fields[:a].should eql(1)
