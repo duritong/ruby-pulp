@@ -1,6 +1,6 @@
 = ruby-pulp
 
-{<img src="https://travis-ci.org/mkrogemann/ruby-pulp.png?branch=master" alt="Build Status" />}[https://travis-ci.org/mkrogemann/ruby-pulp]
+{<img src="https://travis-ci.org/duritong/ruby-pulp.png?branch=master" alt="Build Status" />}[https://travis-ci.org/duritong/ruby-pulp]
 
 A ruby gem to talk to a pulp server using its REST-api.
 
