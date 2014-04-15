@@ -23,4 +23,5 @@ if file = [ ENV['PULP_YML'], File.expand_path('~/.pulp.yaml'),'/etc/pulp/pulp.ya
   Pulp::Connection::Handler.username = global_options['username']
   Pulp::Connection::Handler.password = global_options['password']
   Pulp::Connection::Handler.debug_enabled = global_options['debug']||false
+  Pulp::Connection::Handler.enable_v2 = global_options['enable_v2']||false
 end

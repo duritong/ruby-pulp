@@ -48,8 +48,17 @@ describe Pulp::Connection::Handler do
     it "defaults https to true" do
       Pulp::Connection::Handler.instance_for(:default_https,'bla','user','secret2').instance_variable_get('@https').should eql(true)
     end
+
     it "takes passed https setting" do
       Pulp::Connection::Handler.instance_for(:default_https2,'bla','user2','secret2',false).instance_variable_get('@https').should eql(false)
+    end
+
+    it "defaults enable_v2 to false" do
+      Pulp::Connection::Handler.instance_for(:default_enable_v2,'bla','user','secret2').instance_variable_get('@enable_v2').should eql(false)
+    end
+
+    it "takes passed enable_v2 setting" do
+      Pulp::Connection::Handler.instance_for(:default_enable_v2_2,'bla','user2','secret2',false, true).instance_variable_get('@enable_v2').should eql(true)
     end
   end
 
@@ -104,7 +113,7 @@ describe Pulp::Connection::Handler do
     end
 
     describe "#api_path" do
-      it "is a fixed apth" do
+      it "default v1 path" do
         instance.api_path.should eql("/pulp/api")
       end
     end
@@ -116,6 +125,54 @@ describe Pulp::Connection::Handler do
       it "should depend on the https flag" do
         i = Pulp::Connection::Handler.instance_for(:second_instance,'localhost','user','password',false)
         i.url.should eql("http://localhost/pulp/api/second_instances")
+      end
+    end
+  end
+
+  describe "a v2 instance" do
+    let(:instance) do
+      Pulp::Connection::Handler.hostname = 'localhost'
+      Pulp::Connection::Handler.username = 'admin'
+      Pulp::Connection::Handler.password = 'admin'
+      Pulp::Connection::Handler.enable_v2 = true
+      Pulp::Connection::Handler.instance_for(:instance)
+    end
+    before(:each) { Pulp::Connection::Handler.reset_all }
+    describe "#parsed" do
+      it "gets the connection passed" do
+        instance.parsed{|conn| conn.should eql(instance.connection); DummyResult }
+      end
+
+      it "parses the result" do
+        instance.parsed{|conn| DummyResult }['a'].should eql(1)
+      end
+    end
+
+    describe "#connection" do
+      it "'s url should match our url" do
+        instance.connection.url.should eql(instance.url)
+      end
+      it "'s user should match our username" do
+        instance.connection.user.should eql(Pulp::Connection::Handler.username)
+      end
+      it "'s passowrd should match our password" do
+        instance.connection.password.should eql(Pulp::Connection::Handler.password)
+      end
+    end
+
+    describe "#api_path" do
+      it "should be v2 path" do
+        instance.api_path.should eql("/pulp/api/v2")
+      end
+    end
+
+    describe "#url" do
+      it "should be a full url depending on the identifier" do
+        instance.url.should eql("https://localhost/pulp/api/v2/instances")
+      end
+      it "should depend on the https flag" do
+        i = Pulp::Connection::Handler.instance_for(:second_instance,'localhost','user','password',false)
+        i.url.should eql("http://localhost/pulp/api/v2/second_instances")
       end
     end
   end

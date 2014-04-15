@@ -5,14 +5,15 @@ module Pulp
       include Pulp::Common::Debug
       
       class << self
-        attr_accessor :hostname,:username, :password
+        attr_accessor :hostname,:username, :password, :enable_v2
 
-        def instance_for(identifier,h=nil,u=nil,p=nil,https=true)
+        def instance_for(identifier,h=nil,u=nil,p=nil,https=true,v2=nil)
           instances[identifier] ||= Handler.new(identifier,
                                                 h||hostname||'localhost',
                                                 u||username||'admin',
                                                 p||password||'admin',
-                                                https
+                                                https,
+                                                v2||enable_v2||false
           )
         end
         
@@ -30,12 +31,13 @@ module Pulp
         end
       end
       
-      def initialize(identifier,hostname,username=nil,password=nil,https=true)
+      def initialize(identifier,hostname,username=nil,password=nil,https=true,enable_v2=nil)
         @identifier = identifier
         @hostname = hostname
         @username = username
         @password = password
         @https = https
+        @enable_v2 = enable_v2
       end
       
       def parsed
@@ -47,7 +49,7 @@ module Pulp
       end
 
       def api_path
-        "/pulp/api" 
+        @enable_v2 ? "/pulp/api/v2" : "/pulp/api"
       end
       
       def url
