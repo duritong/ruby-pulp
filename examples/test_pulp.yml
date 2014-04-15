@@ -1,4 +1,5 @@
 hostname: localhost
 username: admin
 password: admin
+enable_v2: false
 debug: false
