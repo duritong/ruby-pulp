@@ -14,7 +14,7 @@ module Pulp
       end
 
       class << self
-        attr_accessor :hostname, :username, :password, :https
+        attr_accessor :hostname, :username, :password, :https, :enable_v2
 
         def reset
           Pulp::Connection::Handler.reset_instance(self.identifier)
@@ -71,11 +71,11 @@ module Pulp
         end
         
         def base
-          Pulp::Connection::Handler.instance_for(self.identifier, hostname, username, password, (https.nil? ? true : https))
+          Pulp::Connection::Handler.instance_for(self.identifier, hostname, username, password, (https.nil? ? true : https), enable_v2)
         end
         
         def plain_base
-          Pulp::Connection::Handler.instance_for('', hostname, username, password, (https.nil? ? true : https))
+          Pulp::Connection::Handler.instance_for('', hostname, username, password, (https.nil? ? true : https), enable_v2)
         end
         
         def parse_item_cmd(item,cmd)
